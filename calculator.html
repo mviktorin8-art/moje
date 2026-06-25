@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <title>Calculator</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+  <div class="calculator">
+    <div class="display">
+      <div class="previous" id="previousOperand">&nbsp;</div>
+      <div class="current" id="currentOperand">0</div>
+    </div>
+
+    <div class="buttons">
+      <button class="clear" data-action="clear">C</button>
+      <button class="backspace" data-action="backspace">⌫</button>
+      <button class="operator" data-action="percent">%</button>
+      <button class="operator" data-operator="÷">÷</button>
+
+      <button data-number="7">7</button>
+      <button data-number="8">8</button>
+      <button data-number="9">9</button>
+      <button class="operator" data-operator="×">×</button>
+
+      <button data-number="4">4</button>
+      <button data-number="5">5</button>
+      <button data-number="6">6</button>
+      <button class="operator" data-operator="−">−</button>
+
+      <button data-number="1">1</button>
+      <button data-number="2">2</button>
+      <button data-number="3">3</button>
+      <button class="operator" data-operator="+">+</button>
+
+      <button data-action="sign">±</button>
+      <button data-number="0">0</button>
+      <button data-number=".">.</button>
+      <button class="equals" data-action="equals">=</button>
+    </div>
+  </div>
+
+  <script>
+    const previousOperandEl = document.getElementById('previousOperand');
+    const currentOperandEl = document.getElementById('currentOperand');
+
+    let currentOperand = '0';
+    let previousOperand = '';
+    let operation = undefined;
+
+    function updateDisplay() {
+      currentOperandEl.textContent = currentOperand;
+      previousOperandEl.textContent = operation
+        ? `${previousOperand} ${operation}`
+        : '\u00A0';
+    }
+
+    function appendNumber(number) {
+      if (number === '.' && currentOperand.includes('.')) return;
+      if (currentOperand === '0' && number !== '.') {
+        currentOperand = number;
+      } else {
+        currentOperand += number;
+      }
+    }
+
+    function chooseOperation(op) {
+      if (currentOperand === '') return;
+      if (previousOperand !== '') {
+        compute();
+      }
+      operation = op;
+      previousOperand = currentOperand;
+      currentOperand = '';
+    }
+
+    function compute() {
+      const prev = parseFloat(previousOperand);
+      const curr = parseFloat(currentOperand);
+      if (isNaN(prev) || isNaN(curr)) return;
+
+      let result;
+      switch (operation) {
+        case '+': result = prev + curr; break;
+        case '−': result = prev - curr; break;
+        case '×': result = prev * curr; break;
+        case '÷':
+          if (curr === 0) {
+            currentOperand = 'Error';
+            previousOperand = '';
+            operation = undefined;
+            updateDisplay();
+            return;
+          }
+          result = prev / curr;
+          break;
+        default: return;
+      }
+
+      currentOperand = roundResult(result).toString();
+      operation = undefined;
+      previousOperand = '';
+    }
+
+    function roundResult(value) {
+      return Math.round((value + Number.EPSILON) * 1e10) / 1e10;
+    }
+
+    function clearAll() {
+      currentOperand = '0';
+      previousOperand = '';
+      operation = undefined;
+    }
+
+    function backspace() {
+      currentOperand = currentOperand.toString().slice(0, -1);
+      if (currentOperand === '') currentOperand = '0';
+    }
+
+    function toggleSign() {
+      if (currentOperand === '0' || currentOperand === 'Error') return;
+      currentOperand = (parseFloat(currentOperand) * -1).toString();
+    }
+
+    function applyPercent() {
+      if (currentOperand === '' || currentOperand === 'Error') return;
+      currentOperand = (parseFloat(currentOperand) / 100).toString();
+    }
+
+    document.querySelectorAll('button').forEach((button) => {
+      button.addEventListener('click', () => {
+        if (button.dataset.number !== undefined) {
+          appendNumber(button.dataset.number);
+        } else if (button.dataset.operator !== undefined) {
+          chooseOperation(button.dataset.operator);
+        } else if (button.dataset.action === 'equals') {
+          compute();
+        } else if (button.dataset.action === 'clear') {
+          clearAll();
+        } else if (button.dataset.action === 'backspace') {
+          backspace();
+        } else if (button.dataset.action === 'sign') {
+          toggleSign();
+        } else if (button.dataset.action === 'percent') {
+          applyPercent();
+        }
+        updateDisplay();
+      });
+    });
+
+    // Keyboard support
+    window.addEventListener('keydown', (e) => {
+      if (e.key >= '0' && e.key <= '9') appendNumber(e.key);
+      else if (e.key === '.') appendNumber('.');
+      else if (e.key === '+') chooseOperation('+');
+      else if (e.key === '-') chooseOperation('−');
+      else if (e.key === '*') chooseOperation('×');
+      else if (e.key === '/') chooseOperation('÷');
+      else if (e.key === 'Enter' || e.key === '=') compute();
+      else if (e.key === 'Backspace') backspace();
+      else if (e.key === 'Escape') clearAll();
+      updateDisplay();
+    });
+
+    updateDisplay();
+  </script>
+
+</body>
+
+</html>

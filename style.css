@@ -1,0 +1,119 @@
+:root {
+      --bg: #1e1e2e;
+      --panel: #27293d;
+      --display-bg: #14141f;
+      --display-fg: #f5f5f5;
+      --num-btn: #3a3d52;
+      --num-btn-hover: #474a63;
+      --op-btn: #ff9f43;
+      --op-btn-hover: #ffb066;
+      --equals-btn: #4cd137;
+      --equals-btn-hover: #5fe04a;
+      --clear-btn: #e74c3c;
+      --clear-btn-hover: #ef6657;
+      --fg-dark: #1e1e2e;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      background: transparent;
+      font-family: "Helvetica Neue", Arial, sans-serif;
+    }
+
+    .calculator {
+      width: 320px;
+      background: var(--panel);
+      border-radius: 18px;
+      padding: 18px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.35);
+    }
+
+    .display {
+      background: var(--display-bg);
+      border-radius: 12px;
+      padding: 22px 18px;
+      margin-bottom: 14px;
+      text-align: right;
+      overflow: hidden;
+    }
+
+    .display .previous {
+      color: #8a8da8;
+      font-size: 0.95rem;
+      min-height: 1.1rem;
+      font-family: "Consolas", "Courier New", monospace;
+    }
+
+    .display .current {
+      color: var(--display-fg);
+      font-size: 2.1rem;
+      font-family: "Consolas", "Courier New", monospace;
+      text-shadow: 0 0 8px rgba(255, 255, 255, 0.15);
+      word-break: break-all;
+    }
+
+    .buttons {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 10px;
+    }
+
+    button {
+      border: none;
+      border-radius: 10px;
+      font-size: 1.1rem;
+      font-weight: 600;
+      padding: 16px 0;
+      cursor: pointer;
+      color: #fff;
+      background: var(--num-btn);
+      transition: background 0.12s ease, transform 0.05s ease;
+    }
+
+    button:hover {
+      background: var(--num-btn-hover);
+    }
+
+    button:active {
+      transform: scale(0.96);
+    }
+
+    button.operator {
+      background: var(--op-btn);
+      color: var(--fg-dark);
+    }
+
+    button.operator:hover {
+      background: var(--op-btn-hover);
+    }
+
+    button.equals {
+      background: var(--equals-btn);
+      color: var(--fg-dark);
+    }
+
+    button.equals:hover {
+      background: var(--equals-btn-hover);
+    }
+
+    button.clear,
+    button.backspace {
+      background: var(--clear-btn);
+    }
+
+    button.clear:hover,
+    button.backspace:hover {
+      background: var(--clear-btn-hover);
+    }
+
+    button.span-2 {
+      grid-column: span 2;
+    }
